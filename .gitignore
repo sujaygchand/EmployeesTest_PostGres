@@ -1,1 +1,2 @@
 *.env
+*EmployeesTest_PostGres/appsettings.json
