@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c1501615-767b-49a8-84b5-c0b071a03f19": {
+      "ProjectGuid": "c1501615-767b-49a8-84b5-c0b071a03f19",
+      "DisplayName": "EmployeesTest_PostGres",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

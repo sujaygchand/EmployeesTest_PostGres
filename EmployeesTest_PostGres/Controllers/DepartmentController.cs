@@ -11,7 +11,8 @@ namespace EmployeesTest_PostGres.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ValidateAntiForgeryToken]
 	public class DepartmentController : ControllerBase
 	{
 		private readonly IConfiguration _configuration;
@@ -52,7 +53,6 @@ namespace EmployeesTest_PostGres.Controllers
 
 		[HttpGet(Name = nameof(GetAllDepartments))]
 		[ProducesResponseType(200, Type = typeof(List<Department>))]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetAllDepartments()
 		{
 			string query = @"
@@ -68,7 +68,6 @@ namespace EmployeesTest_PostGres.Controllers
 
 		[HttpGet("{id:int}", Name = nameof(GetDepartment))]
 		[ProducesResponseType(200, Type = typeof(Department))]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetDepartment(int id)
 		{
 			string query = $@"
@@ -82,5 +81,14 @@ namespace EmployeesTest_PostGres.Controllers
 
 			return table.Rows.Count > 0  ? Ok(table) : NotFound();
 		}
+
+		[HttpPost]
+		[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Department))]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult CreateDepartment()
+		{
+			return NotFound();
+		}
+
 	}
 }
