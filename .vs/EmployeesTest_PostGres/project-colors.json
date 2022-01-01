@@ -5,6 +5,11 @@
       "ProjectGuid": "c1501615-767b-49a8-84b5-c0b071a03f19",
       "DisplayName": "EmployeesTest_PostGres",
       "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
     }
   },
   "NextColorIndex": 1

@@ -126,5 +126,21 @@ namespace EmployeesTest_PostGres.Controllers
 			return Ok(table);
 		}
 
+		[HttpDelete("{id:int}", Name = nameof(DeleteDepartment))]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		public IActionResult DeleteDepartment(int id)
+		{
+			string query = $@"delete from public.""Departments""
+							where ""DepartmentId"" = {id}
+			";
+
+			var table = ExecuteQuery(query);
+
+			if (table == null)
+				return NotFound("Department does not exists");
+
+			return NoContent();
+		}
+
 	}
 }
