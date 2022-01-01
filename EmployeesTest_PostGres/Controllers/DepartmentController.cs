@@ -12,7 +12,6 @@ namespace EmployeesTest_PostGres.Controllers
 	[Route("api/[controller]")]
 	[ApiController]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ValidateAntiForgeryToken]
 	public class DepartmentController : ControllerBase
 	{
 		private readonly IConfiguration _configuration;
@@ -33,13 +32,23 @@ namespace EmployeesTest_PostGres.Controllers
 		{
 			DataTable table = new DataTable();
 
-			NpgsqlDataReader reader;
+			NpgsqlDataReader reader = null;
 			using (NpgsqlConnection connection = new NpgsqlConnection(GetSqlDataSource()))
 			{
 				connection.Open();
 				using (NpgsqlCommand myCommand = new NpgsqlCommand(query, connection))
 				{
-					reader = myCommand.ExecuteReader();
+					try
+					{
+						reader = myCommand.ExecuteReader();
+					} 
+					catch(Exception ex)
+					{
+						reader?.Close();
+						connection.Close();
+						return null;
+					}
+
 					table.Load(reader);
 
 					reader.Close();
@@ -49,7 +58,7 @@ namespace EmployeesTest_PostGres.Controllers
 			}
 
 			return table;
-		} 
+		}
 
 		[HttpGet(Name = nameof(GetAllDepartments))]
 		[ProducesResponseType(200, Type = typeof(List<Department>))]
@@ -79,15 +88,24 @@ namespace EmployeesTest_PostGres.Controllers
 
 			var table = ExecuteQuery(query);
 
-			return table.Rows.Count > 0  ? Ok(table) : NotFound();
+			return table.Rows.Count > 0 ? Ok(table) : NotFound();
 		}
 
 		[HttpPost]
 		[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Department))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public IActionResult CreateDepartment()
+		public IActionResult CreateDepartment([FromBody] Department department)
 		{
-			return NotFound();
+			string query = $@"INSERT INTO public.""Departments""(""DepartmentName"")
+							VALUES('{department.DepartmentName}')
+			";
+
+			var table = ExecuteQuery(query);
+
+			if (table == null)
+				return BadRequest("Department already exists");
+				
+			return CreatedAtAction(nameof(GetDepartment), new { id = department.DepartmentId}, table);
 		}
 
 	}
