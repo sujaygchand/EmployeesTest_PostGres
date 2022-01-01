@@ -92,12 +92,12 @@ namespace EmployeesTest_PostGres.Controllers
 		}
 
 		[HttpPost]
-		[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Department))]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Department))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult CreateDepartment([FromBody] Department department)
 		{
-			string query = $@"INSERT INTO public.""Departments""(""DepartmentName"")
-							VALUES('{department.DepartmentName}')
+			string query = $@"insert into public.""Departments""(""DepartmentName"")
+							values('{department.DepartmentName}')
 			";
 
 			var table = ExecuteQuery(query);
@@ -106,6 +106,24 @@ namespace EmployeesTest_PostGres.Controllers
 				return BadRequest("Department already exists");
 				
 			return CreatedAtAction(nameof(GetDepartment), new { id = department.DepartmentId}, table);
+		}
+
+		[HttpPut]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Department))]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult UpdateDepartment([FromBody] Department department)
+		{
+			string query = $@"update public.""Departments""
+							set ""DepartmentName"" = '{department.DepartmentName}'
+							where ""DepartmentId"" = {department.DepartmentId}
+			";
+
+			var table = ExecuteQuery(query);
+
+			if (table == null)
+				return BadRequest("Department does not exists");
+
+			return Ok(table);
 		}
 
 	}
